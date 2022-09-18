@@ -1,3 +1,4 @@
+// App
 new Vue({
   el: '#app',
   data: {
@@ -5,8 +6,6 @@ new Vue({
     authenticating: false,
     username: null,
     password: null,
-    multiFactorAuthCode: null,
-    useMfa: false,
 
     clients: null,
     clientDelete: null,
@@ -37,8 +36,6 @@ new Vue({
       });
     },
     login(e) {
-      e.preventDefault();
-
       if( !this.username ) return;
       if( !this.password ) return;
       if( this.authenticating ) return;
@@ -47,7 +44,6 @@ new Vue({
       this.pi.createSession({
         username: this.username,
         password: this.password,
-        multiFactorAuthCode: this.multiFactorAuthCode,
       })
         .then(async () => {
           const session = await this.pi.getSession()
@@ -57,15 +53,13 @@ new Vue({
           return this.refresh();
         })
         .catch(err => {
-          alert(err.message || err.toString());
+          Vue.$toast.error(err.message || err.toString());
         })
         .finally(() => {
           this.authenticating = false;
         })
     },
     logout(e) {
-      e.preventDefault();
-
       this.pi.deleteSession()
         .then(() => {
           this.authenticated = false;
@@ -78,23 +72,37 @@ new Vue({
       const name = this.clientCreateName;
       if( !name ) return;
       this.pi.createWireGuardClient({ name })
-        .catch(err => alert(err.message || err.toString()))
+        .then(({ name }) => {
+          Vue.$toast.success(`New client created: ${name}`)
+        })
+        .catch(err => Vue.$toast.error(err.message || err.toString()))
         .finally(() => this.refresh().catch(console.error))
     },
     deleteClient({ name }) {
       this.pi.deleteWireGuardClient({ name })
-        .catch(err => alert(err.message || err.toString()))
+        .then(({ name }) => {
+          debugger
+          Vue.$toast.info(`Client deleted: ${name}`)
+        })
+        .catch(err => Vue.$toast.error(err.message || err.toString()))
         .finally(() => this.refresh().catch(console.error))
     },
-    enableClient({ name }) {
-      this.pi.enableWireGuardClient({ name })
-        .catch(err => alert(err.message || err.toString()))
-        .finally(() => this.refresh().catch(console.error))
-    },
-    disableClient({ name }) {
-      this.pi.disableWireGuardClient({ name })
-        .catch(err => alert(err.message || err.toString()))
-        .finally(() => this.refresh().catch(console.error))
+    enableOrDisableClient({ name, enabled }) {
+      if (enabled) {
+        this.pi.disableWireGuardClient({ name })
+            .then(({ name }) => {
+              Vue.$toast.info(`Client disabled: ${name}`)
+            })
+            .catch(err => Vue.$toast.error(err.message || err.toString()))
+            .finally(() => this.refresh().catch(console.error))
+      } else {
+        this.pi.enableWireGuardClient({ name })
+            .then(({ name }) => {
+              Vue.$toast.info(`Client enabled: ${name}`)
+            })
+            .catch(err => Vue.$toast.error(err.message || err.toString()))
+            .finally(() => this.refresh().catch(console.error))
+       }
     },
   },
   filters: {
@@ -116,14 +124,6 @@ new Vue({
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
     }
   },
-  created() {
-    this.useMfa = document.cookie
-      ?.split(';')
-      ?.find(e => e.includes('useMfa='))
-      ?.split('=')
-      ?.pop()
-      ?.toLowerCase() == 'true';
-  },
   mounted() {
     this.pi = new PiVPN();
     this.pi.getSession()
@@ -132,15 +132,33 @@ new Vue({
         this.hostname = session.hostname || null;
         this.username = session.username || null;
         this.refresh().catch(err => {
-          alert(err.message || err.toString());
+          Vue.$toast.error(err.message || err.toString());
         });
       })
       .catch(err => {
-        alert(err.message || err.toString());
+        Vue.$toast.error(err.message || err.toString());
       })
 
     setInterval(() => {
       this.refresh().catch(console.error);
-    }, 1000);
+    }, 2000);
   },
 });
+
+// Modal component
+Vue.component('modal', {
+  template: '#modal-template',
+  mounted() {
+    document.body.classList.add('overflow-hidden');
+    this.trap = focusTrap.createFocusTrap(this.$el);
+    this.trap.activate();
+  },
+  destroyed() {
+    document.body.classList.remove('overflow-hidden');
+    this.trap.deactivate();
+  },
+});
+
+Vue.use(VueToast, {
+  position: 'top'
+})

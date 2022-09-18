@@ -6,5 +6,5 @@ COPY lib ./lib
 COPY server.js config.js package.json package-lock.json ./
 RUN npm ci --production
 ENV DEBUG=Server,SSH
-EXPOSE 51821
+EXPOSE 3001
 CMD ["node", "server.js"]

@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "serve": "DEBUG=Server nodemon server.js",
-    "build": "docker build --tag pivpn-web ."
+    "build": "docker build --platform linux/amd64 --tag andrew771/pivpn-web ."
   },
   "author": "Emile Nijssen",
   "license": "GPL",
@@ -13,6 +13,7 @@
     "debug": "^4.3.1",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "helmet": "^6.0.0",
     "node-ssh": "^11.1.1",
     "qrcode": "^1.4.4"
   },

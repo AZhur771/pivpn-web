@@ -32,11 +32,11 @@ class PiVPN {
     });
   }
 
-  async createSession({ username, password, multiFactorAuthCode }) {
+  async createSession({ username, password }) {
     return this.call({
       method: 'post',
       path: '/session',
-      body: { username, password, multiFactorAuthCode },
+      body: { username, password },
     });
   }
 
