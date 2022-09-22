@@ -1,16 +1,4 @@
-# 🗑 THIS PROJECT IS DEPRECATED 🗑
-
-**Please uninstall PiVPN and upgrade to [WireGuard Easy](https://github.com/WeeJeWel/wg-easy). It's much simpler and better! 🎉**
-
----
-
 # PiVPN Web
-
-[![Build & Publish Docker Image to Docker Hub](https://github.com/WeeJeWel/pivpn-web/actions/workflows/deploy.yml/badge.svg?branch=production)](https://github.com/WeeJeWel/pivpn-web/actions/workflows/deploy.yml)
-[![Docker](https://img.shields.io/docker/v/weejewel/pivpn-web/latest)](https://hub.docker.com/r/weejewel/pivpn-web)
-[![Docker](https://img.shields.io/docker/pulls/weejewel/pivpn-web.svg)](https://hub.docker.com/r/weejewel/pivpn-web)
-[![Sponsor](https://img.shields.io/github/sponsors/weejewel)](https://github.com/sponsors/WeeJeWel)
-
 
 PiVPN Web is an open-source Web UI for PiVPN (when using WireGuard).
 
@@ -43,8 +31,8 @@ PiVPN Web is an open-source Web UI for PiVPN (when using WireGuard).
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 
-# Add user 'pi' to group 'docker'
-sudo usermod -aG docker pi
+# Add user <user> to group 'docker'
+sudo usermod -aG docker <user>
 ```
 
 ### 2. Install PiVPN
@@ -60,30 +48,31 @@ curl -L https://install.pivpn.io | bash
 Run this command once to automatically start the service on boot.
 
 ```bash
-docker run -d -p 51821:51821 --name pivpn-web --restart=unless-stopped weejewel/pivpn-web
+docker run -d -p 3001:3001 --name pivpn-web --restart=unless-stopped andrew771/pivpn-web
 ```
 
 > 💡 Remove the `restart=always` flag to prevent auto-start on boot.
 
 > 💡 You can set the environment variable `SSH_HOST` to a hostname/IP to connect to a different PiVPN server than PiVPN Web is running on.
 
-> 💡 There's also a [`docker-compose.yml`](https://github.com/WeeJeWel/pivpn-web/blob/master/docker-compose.yml) file.
+> 💡 There's also a [`docker-compose.yml`](https://github.com/AZhur771/pivpn-web/blob/master/docker-compose.yml) file.
 
 ## Usage
 
-Open `http://<ip-of-your-pi>:51821` and log in with your Raspberry Pi username & password.
-
-> 💡 The default Raspbian username is `pi` and the default password is `raspberry`.
+Open `http://<ip-of-your-pi>:51821` and log in.
 
 > 💡 When a client's name is a valid Gravatar e-mail, they will be shown with their avatar.
 
 ## Supported environment variables
-| Variable   | Default    | Comment                             |
-|:-----------|:--------   |:------------------------------------|
-| PORT       | 51821      | The listening port (number)         |
-| SSH_HOST   | 172.17.0.1 | The SSH host to connect to (ip)     |
-| SSH_PORT   | 22         | The SSH port to connect to (number) |
-| ENABLE_2FA | no         | Enable 2FA login support (yes/no)   |
+| Variable       | Default    | Comment                                         |
+|:---------------|:-----------|:------------------------------------------------|
+| PORT           | 3001       | The listening port (number)                     |
+| SSH_HOST       | (not set)  | The SSH host to connect to (ip)                 |
+| SSH_PORT       | 22         | The SSH port to connect to (number)             |
+| SSH_USER       | (not set)  | The SSH user used to connect to server          |
+| SSH_PASSWORD   | (not set)  | The SSH password used to connect to server      |
+| ADMIN_USER     | (not set)  | The admin username used to login into pivpn-web |
+| ADMIN_PASSWORD | (not set)  | The admin password used to login into pivpn-web |
 
 ## Updating
 
@@ -92,6 +81,6 @@ Run these commands to update to the latest version.
 ```bash
 docker stop pivpn-web
 docker rm pivpn-web
-docker pull weejewel/pivpn-web
-docker run -d -p 51821:51821 --name pivpn-web --restart=unless-stopped weejewel/pivpn-web
+docker pull andrew771/pivpn-web
+docker run -d -p 3001:3001 --name pivpn-web --restart=unless-stopped andrew771/pivpn-web
 ```
