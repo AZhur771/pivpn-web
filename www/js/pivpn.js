@@ -1,7 +1,6 @@
 'use strict';
 
 class PiVPN {
-
   async call({ method, path, body }) {
     const res = await fetch(`/api${path}`, {
       method,
@@ -13,12 +12,11 @@ class PiVPN {
         : undefined,
     });
 
-    if( res.status === 204 )
-      return undefined;
+    if (res.status === 204) return undefined;
 
     const json = await res.json();
 
-    if( !res.ok ) {
+    if (!res.ok) {
       throw new Error(json.error || res.statusText);
     }
 
@@ -88,5 +86,4 @@ class PiVPN {
       path: `/wireguard/client/${name}/disable`,
     });
   }
-
 }

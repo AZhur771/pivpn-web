@@ -5,12 +5,16 @@
   "main": "server.js",
   "scripts": {
     "serve": "DEBUG=Server nodemon server.js",
-    "build": "docker build --platform linux/amd64 --tag andrew771/pivpn-web ."
+    "build": "docker build --tag andrew771/pivpn-web .",
+    "build:arm": "docker build --platform linux/amd64 --tag andrew771/pivpn-web .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix --ext .js ."
   },
   "author": "Emile Nijssen",
   "license": "GPL",
   "dependencies": {
     "debug": "^4.3.1",
+    "eslint": "8.22.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "helmet": "^6.0.0",
@@ -18,6 +22,8 @@
     "qrcode": "^1.4.4"
   },
   "devDependencies": {
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.7"
   },
   "nodemonConfig": {

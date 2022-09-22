@@ -4,9 +4,8 @@
 <head>
   <title>PiVPN Web</title>
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/theme-default.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/theme-sugar.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/theme-sugar.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/theme-default.css" integrity="sha256-dHys6x9FEB9YkukIoMesqgRhwIxdITXPOUSYTpXMAhs=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/theme-sugar.css" integrity="sha256-XBLPwioBkvDp29HOqQXlQi3nuzRem72WV5DDbRYZpk0=" crossorigin="anonymous">
   <link href="/css/styles.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="img/favicon.png">
@@ -211,7 +210,7 @@
                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-400 text-base font-medium text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
               Create
             </button>
-            <button v-else type="button"
+            <button v-if="!clientCreateName.length" type="button"
                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-200 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm cursor-not-allowed">
               Create
             </button>
@@ -357,12 +356,12 @@
     </transition>
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/md5@2.3.0/dist/md5.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/timeago.js@2.0.5/dist/timeago.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tabbable@6.0.0/dist/index.umd.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/focus-trap@7.0.0/dist/focus-trap.umd.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.min.js" integrity="sha256-rjpmUiJ6gyRPZ2rJkp3soGVAnXC0xotw7s61nf7BqMY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/md5@2.3.0/dist/md5.min.js" integrity="sha256-se0xQkOOX44nCifjHRn5CNgLrhal4aKrdzH5gaCXB/4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/timeago.js@2.0.5/dist/timeago.min.js" integrity="sha256-w9sX+hQ8r0oQl0sVfkxDeVJrnj8+hPv1sB1Nv2hN3J8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tabbable@6.0.0/dist/index.umd.js" integrity="sha256-5iVNr54b8bBnJJRg4XLFx00GDIxGxT+4fvIXLLXaSrM=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/focus-trap@7.0.0/dist/focus-trap.umd.js" integrity="sha256-1j4Ir4oOie3sRHzRSjSakApM0rfTAuZZ7dr8VEvIyKE=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.3/dist/index.min.js" integrity="sha256-PA/KCoPDHn8m66PvIBIS8ko2gA0n8BV0PFToRAOf1Yo=" crossorigin="anonymous"></script>
 
   <script src="/js/pivpn.js"></script>
   <script src="/js/app.js"></script>
