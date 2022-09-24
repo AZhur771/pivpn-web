@@ -4,8 +4,11 @@
 new Vue({
   el: '#app',
   data: {
+    appInitialized: false,
+
     authenticated: null,
     authenticating: false,
+
     username: null,
     password: null,
 
@@ -122,6 +125,7 @@ new Vue({
     },
   },
   mounted() {
+    this.appInitialized = true
     this.pi = new PiVPN();
     this.pi.getSession()
       .then((session) => {

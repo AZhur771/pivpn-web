@@ -14,7 +14,6 @@ PiVPN Web is an open-source Web UI for PiVPN (when using WireGuard).
 * See which users are connected
 * Log in with your Linux username & password
 * Connects to your local PiVPN installation — or remote over SSH
-* Gravatar support 😏
 
 ## Requirements
 
@@ -53,26 +52,19 @@ docker run -d -p 3001:3001 --name pivpn-web --restart=unless-stopped andrew771/p
 
 > 💡 Remove the `restart=always` flag to prevent auto-start on boot.
 
-> 💡 You can set the environment variable `SSH_HOST` to a hostname/IP to connect to a different PiVPN server than PiVPN Web is running on.
-
 > 💡 There's also a [`docker-compose.yml`](https://github.com/AZhur771/pivpn-web/blob/master/docker-compose.yml) file.
 
-## Usage
-
-Open `http://<ip-of-your-pi>:51821` and log in.
-
-> 💡 When a client's name is a valid Gravatar e-mail, they will be shown with their avatar.
-
 ## Supported environment variables
-| Variable       | Default    | Comment                                         |
-|:---------------|:-----------|:------------------------------------------------|
-| PORT           | 3001       | The listening port (number)                     |
-| SSH_HOST       | (not set)  | The SSH host to connect to (ip)                 |
-| SSH_PORT       | 22         | The SSH port to connect to (number)             |
-| SSH_USER       | (not set)  | The SSH user used to connect to server          |
-| SSH_PASSWORD   | (not set)  | The SSH password used to connect to server      |
-| ADMIN_USER     | (not set)  | The admin username used to login into pivpn-web |
-| ADMIN_PASSWORD | (not set)  | The admin password used to login into pivpn-web |
+| Variable       | Default       | Comment                                                          |
+|:---------------|:--------------|:-----------------------------------------------------------------|
+| PORT           | 3001          | The listening port (number)                                      |
+| IS_SECURE      | (not set)     | Set if you use TLS/SSL                                           |
+| SSH_HOST       | (not set)     | The SSH host to connect to (ip)                                  |
+| SSH_PORT       | 22            | The SSH port to connect to (number)                              |
+| SSH_USER       | (not set)     | The SSH user used to connect to server                           |
+| SSH_PASSWORD   | (not set)     | The SSH password used to connect to server                       |
+| ADMIN_USER     | (not set)     | The admin username used to login into pivpn-web                  |
+| ADMIN_PASSWORD | (not set)     | The admin password used to login into pivpn-web                  |
 
 ## Updating
 
