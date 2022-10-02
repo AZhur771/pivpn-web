@@ -10,7 +10,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix --ext .js ."
   },
-  "author": "Emile Nijssen",
   "license": "GPL",
   "dependencies": {
     "debug": "^4.3.1",
@@ -31,13 +30,5 @@
     "ignore": [
       "www/*"
     ]
-  },
-  "docker": {
-    "production": {
-      "tags": "latest"
-    },
-    "staging": {
-      "tags": "beta"
-    }
   }
 }
