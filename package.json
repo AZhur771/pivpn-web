@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "serve": "DEBUG=Server nodemon server.js",
+    "serve": "env-cmd nodemon server.js",
     "build": "docker build --tag andrew771/pivpn-web .",
     "build:arm": "docker build --platform linux/amd64 --tag andrew771/pivpn-web .",
     "lint": "eslint .",
@@ -13,6 +13,7 @@
   "license": "GPL",
   "dependencies": {
     "debug": "^4.3.1",
+    "env-cmd": "^10.1.0",
     "eslint": "8.22.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
