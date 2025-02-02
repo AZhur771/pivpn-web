@@ -36,7 +36,29 @@
         <div class="shadow-md rounded-lg bg-white overflow-hidden">
           <div class="flex flex-row flex-auto items-center p-3 px-5 border border-b-2 border-gray-100">
             <div class="flex-grow">
-              <p class="text-2xl font-medium">Clients</p>
+              <div class="text-2xl font-medium">Clients</div>
+              <div class="flex flex-grow justify-start items-center">
+                <div v-if="clients && clients.length > 0" class="text-sm text-gray-400">Total: {{clients.length}}</div>
+                <div v-if="clients && clients.length > 0" class="text-sm text-gray-400 ml-1">· traffic: {{ totalDownloaded + totalUploaded | bytes }}</div>
+                <div class="text-sm text-gray-400 ml-1">
+                  ·
+                  <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                        fill="currentColor">
+                    <path fill-rule="evenodd"
+                          d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
+                          clip-rule="evenodd" />
+                  </svg>
+                  {{totalDownloaded | bytes}}</div>
+                <div class="text-sm text-gray-400 ml-1">
+                  ·
+                  <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                        fill="currentColor">
+                    <path fill-rule="evenodd"
+                          d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                          clip-rule="evenodd" />
+                  </svg>
+                  {{totalUploaded | bytes}}</div>
+              </div>
             </div>
             <div class="flex-shrink-0">
               <button @click="clientCreate = true; clientCreateName = '';"
@@ -67,30 +89,34 @@
                 </div>
 
                 <div class="flex-grow">
-                  <div class="text-gray-700" :title="'Created at ' + dateTime(new Date(client.createdAt))">{{client.name}}
+                  <div class="text-gray-700 " :class="{ 'text-red-600': (client.transferTx + client.transferRx) > limitPerClient }" :title="'Created at ' + dateTime(new Date(client.createdAt))">{{client.name}}
                   </div>
                   <div v-if="client.allowedIps" class="text-gray-300 text-xs">{{client.iface}}
                     · {{client.allowedIps.split('/')[0]}}
                     <span v-if="client.transferTx" title="Download">
-                  ·
-                  <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                       fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
-                          clip-rule="evenodd" />
-                  </svg>
-                  {{client.transferTx | bytes}}
-                </span>
+                      ·
+                      traffic: {{client.transferTx + client.transferRx | bytes}}
+                    </span>
+                    <span v-if="client.transferTx" title="Download">
+                      ·
+                      <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                          fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd" />
+                      </svg>
+                      {{client.transferTx | bytes}}
+                    </span>
                     <span v-if="client.transferRx" title="Upload">
-                  ·
-                  <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                       fill="currentColor">
-                    <path fill-rule="evenodd"
-                          d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
-                          clip-rule="evenodd" />
-                  </svg>
-                  {{client.transferRx | bytes}}
-                </span>
+                    ·
+                    <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                        fill="currentColor">
+                      <path fill-rule="evenodd"
+                            d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {{client.transferRx | bytes}}
+                  </span>
                     <span v-if="client.latestHandshake"
                           :title="'Last seen at ' + dateTime(new Date(client.latestHandshake))">
                   · {{new Date(client.latestHandshake) | timeago}}

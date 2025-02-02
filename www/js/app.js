@@ -17,6 +17,11 @@ new Vue({
     clientCreate: null,
     clientCreateName: '',
     qrcode: null,
+
+    totalDownloaded: 0,
+    totalUploaded: 0,
+
+    limitPerClient: 0,
   },
   methods: {
     dateTime: (value) => new Intl.DateTimeFormat(undefined, {
@@ -37,6 +42,26 @@ new Vue({
 
         return client;
       });
+
+      const {
+        totalDownloaded,
+        totalUploaded,
+      } = clients.reduce((acc, curr) => {
+        return {
+          totalDownloaded: acc.totalDownloaded + curr.transferTx,
+          totalUploaded: acc.totalUploaded + curr.transferRx,
+        };
+      }, {
+        totalDownloaded: 0,
+        totalUploaded: 0,
+      });
+
+      this.totalDownloaded = totalDownloaded;
+      this.totalUploaded = totalUploaded;
+
+      const TRAFFIC_LIMIT = 161061273600; // 150 GB
+
+      this.limitPerClient = TRAFFIC_LIMIT / clients.length;
     },
     login(e) {
       if (!this.username) return;
