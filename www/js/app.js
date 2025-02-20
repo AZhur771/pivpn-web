@@ -48,8 +48,8 @@ new Vue({
         totalUploaded,
       } = clients.reduce((acc, curr) => {
         return {
-          totalDownloaded: acc.totalDownloaded + curr.transferTx,
-          totalUploaded: acc.totalUploaded + curr.transferRx,
+          totalDownloaded: acc.totalDownloaded + (curr.transferTx || 0),
+          totalUploaded: acc.totalUploaded + (curr.transferRx || 0),
         };
       }, {
         totalDownloaded: 0,

@@ -1,26 +1,36 @@
-const path = require('path');
+import path from 'path';
 
-const express = require('express');
-const expressSession = require('express-session');
-const helmet = require('helmet');
-const debug = require('debug')('Server');
-const morgan = require('morgan');
+import express from 'express';
+import expressSession from 'express-session';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import _debug from 'debug';
 
-const Util = require('./Util');
-const SSH = require('./SSH');
-const PiVPNWireGuard = require('./PiVPNWireGuard');
-const ServerError = require('./ServerError');
+import Util from './Util';
+import SSH from './SSH';
+import PiVPNWireGuard from './PiVPNWireGuard';
+import ServerError from './ServerError';
 
-const {
-  PORT,
-  ADMIN_USER,
-  ADMIN_PASSWORD,
-} = require('../config');
+import { PORT, ADMIN_USER, ADMIN_PASSWORD, SSH_USER } from './config';
 
-module.exports = class Server {
+const debug = _debug('Server');
+
+interface Session {
+  username: string;
+  hostname: string;
+}
+
+export default class Server {
+  private sessions: Record<string, Session>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly app: any;
+  private readonly wireguard: PiVPNWireGuard;
+
   constructor() {
     // Sessions
     this.sessions = {};
+
+    this.wireguard = new PiVPNWireGuard({ ssh: new SSH() });
 
     // Express
     this.app = express()
@@ -41,7 +51,7 @@ module.exports = class Server {
       .use(morgan(':method :url :status - :response-time ms'))
       .set('trust proxy', 1)
       .use(expressSession({
-        secret: process.env.SECRET || String(Math.random()),
+        secret: process.env.SECRET ?? String(Math.random()),
         resave: true,
         saveUninitialized: true,
         cookie: {
@@ -87,80 +97,76 @@ module.exports = class Server {
           throw new Error('Wrong username or password');
         }
 
-        const ssh = new SSH();
-        await ssh.connect();
-        const { stdout: hostname } = await ssh.exec('hostname');
-
-        const wireguard = new PiVPNWireGuard({ ssh });
+        const hostname = await this.wireguard.getHostname();
 
         this.sessions[req.session.id] = {
-          ssh,
-          wireguard,
-          username,
-          hostname,
+          username: SSH_USER ?? '',
+          hostname
         };
 
         req.session.save();
-        debug(`New Session: ${username}@${hostname} (${req.session.id})`);
+        debug(`New Session for ${username}: ${SSH_USER}@${hostname} (${req.session.id})`);
       }))
       .delete('/api/session', Util.promisify(async (req) => {
-        const session = this.getSession(req.session.id);
+        this.validateSession(req.session.id);
 
-        session.wireguard.destroy();
-        session.ssh.destroy();
-        req.session.destroy();
+        const { username, hostname } = this.sessions[req.session.id];
 
-        debug(`Deleted Session: ${session.username}@${session.hostname}`);
+        req.session.destroy((err) => {
+          debug(err);
+        });
+        
+        debug(`Deleted Session for ${username}: ${SSH_USER}@${hostname}`);
       }))
 
       // WireGuard
       .get('/api/wireguard/client', Util.promisify(async (req) => {
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.getClients();
+        this.validateSession(req.session.id);
+        return await this.wireguard.getClients();
       }))
       .get('/api/wireguard/client-status', Util.promisify(async (req) => {
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.getClientsStatus();
+        this.validateSession(req.session.id);
+        return await this.wireguard.getClientsStatus();
       }))
       .get('/api/wireguard/client/:name', Util.promisify(async (req) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.getClient({ name });
+        this.validateSession(req.session.id);
+        return await this.wireguard.getClient({ name });
       }))
       .get('/api/wireguard/client/:name/qrcode.svg', Util.promisify(async (req, res) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        const svg = await wireguard.getClientQRCodeSVG({ name });
+        this.validateSession(req.session.id);
+        const svg = await this.wireguard.getClientQRCodeSVG({ name });
         res.header('Content-Type', 'image/svg+xml');
         res.send(svg);
       }))
       .get('/api/wireguard/client/:name/configuration', Util.promisify(async (req, res) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        const configuration = await wireguard.getClientConfiguration({ name });
+        this.validateSession(req.session.id);
+        const configuration = await this.wireguard.getClientConfiguration({ name });
         res.header('Content-Disposition', `attachment; filename="${name}.conf"`);
         res.header('Content-Type', 'text/plain');
         res.send(configuration);
       }))
       .post('/api/wireguard/client/:name', Util.promisify(async (req) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.createClient({ name });
+        this.validateSession(req.session.id);
+        return await this.wireguard.createClient({ name });
       }))
       .delete('/api/wireguard/client/:name', Util.promisify(async (req) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.deleteClient({ name });
+        this.validateSession(req.session.id);
+        return await this.wireguard.deleteClient({ name });
       }))
       .post('/api/wireguard/client/:name/enable', Util.promisify(async (req) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.enableClient({ name });
+        this.validateSession(req.session.id);
+        return await this.wireguard.enableClient({ name });
       }))
       .post('/api/wireguard/client/:name/disable', Util.promisify(async (req) => {
         const { name } = req.params;
-        const { wireguard } = this.getSession(req.session.id);
-        return wireguard.disableClient({ name });
+        this.validateSession(req.session.id);
+        return await this.wireguard.disableClient({ name });
       }))
 
       // Start the server
@@ -169,12 +175,10 @@ module.exports = class Server {
       });
   }
 
-  getSession(sessionId) {
+  private validateSession(sessionId: string): void {
     const session = this.sessions[sessionId];
     if (!session) {
       throw new ServerError(`Invalid Session: ${sessionId}`, 401);
     }
-
-    return session;
   }
-};
+}

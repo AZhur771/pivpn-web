@@ -4,28 +4,37 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "serve": "env-cmd nodemon server.js",
+    "serve": "env-cmd ts-node lib",
     "build": "docker build --tag andrew771/pivpn-web .",
     "build:arm": "docker build --platform linux/amd64 --tag andrew771/pivpn-web .",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix --ext .js ."
+    "lint:fix": "eslint --fix ."
   },
   "license": "GPL",
   "dependencies": {
     "debug": "^4.3.1",
     "env-cmd": "^10.1.0",
-    "eslint": "8.22.0",
-    "express": "^4.17.1",
+    "express": "^4.21.2",
     "express-session": "^1.17.1",
     "helmet": "^6.0.0",
     "morgan": "^1.10.0",
     "node-ssh": "^11.1.1",
-    "qrcode": "^1.4.4"
+    "qrcode": "^1.4.4",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "nodemon": "^2.0.7"
+    "@eslint/js": "^9.20.0",
+    "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
+    "@types/morgan": "^1.9.9",
+    "@types/qrcode": "^1.5.5",
+    "eslint": "^9.20.1",
+    "eslint-config-love": "^118.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.1"
   },
   "nodemonConfig": {
     "ignore": [
