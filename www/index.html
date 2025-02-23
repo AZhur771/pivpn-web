@@ -40,6 +40,7 @@
               <div class="flex flex-grow justify-start items-center">
                 <div v-if="clients && clients.length > 0" class="text-sm text-gray-400">Total: {{clients.length}}</div>
                 <div v-if="clients && clients.length > 0" class="text-sm text-gray-400 ml-1">· traffic: {{ totalDownloaded + totalUploaded | bytes }}</div>
+                <div v-if="clients && clients.length > 0" class="text-sm text-gray-400 ml-1">· ban limit: {{ limitPerClient | bytes }}</div>
                 <div class="text-sm text-gray-400 ml-1">
                   ·
                   <svg class="align-middle h-3 inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -93,7 +94,7 @@
                   </div>
                   <div v-if="client.allowedIps" class="text-gray-300 text-xs">{{client.iface}}
                     · {{client.allowedIps.split('/')[0]}}
-                    <span v-if="client.transferTx" title="Download">
+                    <span v-if="(client.transferTx + client.transferRx) > 0" title="Total download">
                       ·
                       traffic: {{client.transferTx + client.transferRx | bytes}}
                     </span>

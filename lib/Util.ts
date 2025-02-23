@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import ServerError from './ServerError';
 
 export default class Util {
@@ -27,7 +27,8 @@ export default class Util {
 
           if (typeof e === 'string') {
             error = new Error(e);
-          } else {
+          }
+          else {
             error = e;
           }
 

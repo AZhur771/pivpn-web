@@ -5,7 +5,7 @@ import { SSH_PORT, SSH_HOST, SSH_USER, SSH_PASSWORD } from './config';
 
 const debug = _debug('SSH');
 
-export default class SSH {
+export class SSH {
   private readonly ssh: NodeSSH;
   private readonly host: string;
   private readonly port: number;
@@ -67,3 +67,5 @@ export default class SSH {
     this.ssh.dispose();
   }
 };
+
+export const ssh = new SSH();

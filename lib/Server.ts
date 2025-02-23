@@ -7,8 +7,7 @@ import morgan from 'morgan';
 import _debug from 'debug';
 
 import Util from './Util';
-import SSH from './SSH';
-import PiVPNWireGuard from './PiVPNWireGuard';
+import PiVPNWireGuard, { piVPNWireGuard } from './PiVPNWireGuard';
 import ServerError from './ServerError';
 
 import { PORT, ADMIN_USER, ADMIN_PASSWORD, SSH_USER } from './config';
@@ -20,27 +19,21 @@ interface Session {
   hostname: string;
 }
 
-export default class Server {
-  private sessions: Record<string, Session>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly app: any;
-  private readonly wireguard: PiVPNWireGuard;
+export class Server {
+  private sessions: Record<string, Session> = {};
 
-  constructor() {
-    // Sessions
-    this.sessions = {};
+  constructor(private readonly wireguard: PiVPNWireGuard) {}
 
-    this.wireguard = new PiVPNWireGuard({ ssh: new SSH() });
-
+  public async init(): Promise<void> {
     // Express
-    this.app = express()
+    express()
       .use(helmet({
         contentSecurityPolicy: {
           directives: {
             ...helmet.contentSecurityPolicy.getDefaultDirectives(),
             'script-src': [
-              "'self'",
-              "'unsafe-eval'",
+              '\'self\'',
+              '\'unsafe-eval\'',
               'https://cdn.jsdelivr.net/',
             ],
           },
@@ -101,7 +94,7 @@ export default class Server {
 
         this.sessions[req.session.id] = {
           username: SSH_USER ?? '',
-          hostname
+          hostname,
         };
 
         req.session.save();
@@ -115,7 +108,7 @@ export default class Server {
         req.session.destroy((err) => {
           debug(err);
         });
-        
+
         debug(`Deleted Session for ${username}: ${SSH_USER}@${hostname}`);
       }))
 
@@ -182,3 +175,5 @@ export default class Server {
     }
   }
 }
+
+export const server = new Server(piVPNWireGuard);

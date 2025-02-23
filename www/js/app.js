@@ -60,8 +60,9 @@ new Vue({
       this.totalUploaded = totalUploaded;
 
       const TRAFFIC_LIMIT = 161061273600; // 150 GB
+      const LIMIT_MULTIPLIER = 5;
 
-      this.limitPerClient = TRAFFIC_LIMIT / clients.length;
+      this.limitPerClient = (TRAFFIC_LIMIT / clients.length) * LIMIT_MULTIPLIER;
     },
     login(e) {
       if (!this.username) return;

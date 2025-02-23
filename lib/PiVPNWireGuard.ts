@@ -1,5 +1,5 @@
 import QRCode from 'qrcode';
-import type SSH from './SSH';
+import { ssh, SSH } from './SSH';
 
 interface Client {
   name: string;
@@ -10,7 +10,7 @@ interface Client {
 interface ClientStatus extends Client {
   iface?: string;
   preSharedKey?: string;
-  enabled: boolean
+  enabled: boolean;
   endpoint?: string | null;
   allowedIps?: string;
   latestHandshake?: Date | null;
@@ -20,11 +20,7 @@ interface ClientStatus extends Client {
 }
 
 export default class PiVPNWireGuard {
-  private readonly ssh: SSH;
-
-  constructor({ ssh }: { ssh: SSH }) {
-    this.ssh = ssh;
-  }
+  constructor(private readonly ssh: SSH) {}
 
   private sanitizeName(name: string): void {
     const regex = /[^a-z0-9 .,_-]/gim;
@@ -40,7 +36,7 @@ export default class PiVPNWireGuard {
     return stdout
       .trim()
       .split('\n')
-      .filter((line) => line.length > 0)
+      .filter(line => line.length > 0)
       .map((line) => {
         const [name, publicKey, createdAt] = line.split(' ');
         return {
@@ -86,7 +82,7 @@ export default class PiVPNWireGuard {
           persistentKeepalive,
         ] = line.split('\t');
 
-        const client = result.find((cl) => cl.publicKey === publicKey);
+        const client = result.find(cl => cl.publicKey === publicKey);
         if (!client) return;
 
         client.iface = iface;
@@ -113,7 +109,7 @@ export default class PiVPNWireGuard {
 
   public async getClient({ name }: { name: string }): Promise<Client> {
     const clients = await this.getClients();
-    const client = clients.find((cl) => cl.name === name);
+    const client = clients.find(cl => cl.name === name);
 
     if (!client) {
       throw new Error(`Invalid Client: ${name}`);
@@ -146,11 +142,10 @@ export default class PiVPNWireGuard {
     try {
       await this.getClient({ name });
       throw new Error(`Duplicate Client: ${name}`);
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    catch (err: any) {
       if (err.message.startsWith('Duplicate Client')) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw err;
       }
     }
@@ -194,3 +189,5 @@ export default class PiVPNWireGuard {
     this.ssh.destroy();
   }
 };
+
+export const piVPNWireGuard = new PiVPNWireGuard(ssh);
