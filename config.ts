@@ -5,3 +5,5 @@ export const SSH_USER = process.env.SSH_USER;
 export const SSH_PASSWORD = process.env.SSH_PASSWORD;
 export const ADMIN_USER = process.env.ADMIN_USER;
 export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+export const VIEWER_USER = process.env.VIEWER_USER;
+export const VIEWER_PASSWORD = process.env.VIEWER_PASSWORD;

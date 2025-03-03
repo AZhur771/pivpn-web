@@ -11,6 +11,7 @@ new Vue({
 
     username: null,
     password: null,
+    isAdmin: false,
 
     clients: null,
     clientDelete: null,
@@ -62,7 +63,7 @@ new Vue({
       const TRAFFIC_LIMIT = 161061273600; // 150 GB
       const LIMIT_MULTIPLIER = 5;
 
-      this.limitPerClient = (TRAFFIC_LIMIT / clients.length) * LIMIT_MULTIPLIER;
+      this.limitPerClient = Math.round((TRAFFIC_LIMIT / clients.length) * LIMIT_MULTIPLIER);
     },
     login(e) {
       if (!this.username) return;
@@ -79,6 +80,7 @@ new Vue({
           this.authenticated = session.authenticated;
           this.hostname = session.hostname || null;
           this.username = session.username || null;
+          this.isAdmin = session.isAdmin || false;
           return this.refresh();
         })
         .catch((err) => {
@@ -158,6 +160,7 @@ new Vue({
         this.authenticated = session.authenticated;
         this.hostname = session.hostname || null;
         this.username = session.username || null;
+        this.isAdmin = session.isAdmin || false;
         this.refresh().catch((err) => {
           Vue.$toast.error(err.message || err.toString());
         });
@@ -168,7 +171,7 @@ new Vue({
 
     setInterval(() => {
       this.refresh().catch(console.error);
-    }, 2000);
+    }, 10000);
   },
 });
 

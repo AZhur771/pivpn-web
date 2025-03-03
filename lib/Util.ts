@@ -32,6 +32,8 @@ export default class Util {
             error = e;
           }
 
+          console.error(e);
+
           const status = error instanceof ServerError ? error.getStatusCode() : 500;
 
           return res

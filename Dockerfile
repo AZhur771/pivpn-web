@@ -1,9 +1,8 @@
-FROM node:14-alpine
+FROM node:18-alpine
 WORKDIR /app
 COPY www ./www
-COPY services ./services
 COPY lib ./lib
-COPY server.js config.js package.json package-lock.json ./
+COPY server.ts config.ts package.json package-lock.json ./
 RUN npm ci --production
 EXPOSE 3001
-CMD ["node", "server.js"]
+CMD ["ts-node", "server.ts"]

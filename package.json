@@ -4,14 +4,18 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "serve": "env-cmd ts-node lib",
+    "serve": "env-cmd ts-node server.ts",
     "build": "docker build --tag andrew771/pivpn-web .",
     "build:arm": "docker build --platform linux/amd64 --tag andrew771/pivpn-web .",
+    "migration:create": "env-cmd typeorm-ts-node-commonjs migration:create",
+    "migration:run": "env-cmd typeorm-ts-node-commonjs migration:run -d ./lib/Datasource.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
   "license": "GPL",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0",
     "debug": "^4.3.1",
     "env-cmd": "^10.1.0",
     "express": "^4.21.2",
@@ -20,7 +24,13 @@
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
     "node-ssh": "^11.1.1",
-    "qrcode": "^1.4.4"
+    "qrcode": "^1.4.4",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.20",
+    "typeorm-store": "^2.0.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
@@ -29,12 +39,16 @@
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.1",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.13.5",
+    "@types/node": "^22.13.8",
     "@types/node-cron": "^3.0.11",
     "@types/qrcode": "^1.5.5",
     "eslint": "^9.20.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.1"
+  },
+  "overrides": {
+    "typeorm-store": {
+      "typeorm": "^0.3.20"
+    }
   }
 }

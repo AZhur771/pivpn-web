@@ -1,13 +1,13 @@
 import QRCode from 'qrcode';
 import { ssh, SSH } from './SSH';
 
-interface Client {
+export interface Client {
   name: string;
   publicKey: string;
   createdAt: Date;
 }
 
-interface ClientStatus extends Client {
+export interface ClientStatus extends Client {
   iface?: string;
   preSharedKey?: string;
   enabled: boolean;

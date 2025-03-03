@@ -62,7 +62,7 @@
               </div>
             </div>
             <div class="flex-shrink-0">
-              <button @click="clientCreate = true; clientCreateName = '';"
+              <button v-if="isAdmin" @click="clientCreate = true; clientCreateName = '';"
                       class="hover:bg-green-400 hover:border-green-400 hover:text-white text-gray-700 border-2 border-gray-100 py-2 px-4 rounded inline-flex items-center transition">
                 <svg class="w-4 mr-2" inline xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -127,7 +127,7 @@
               </div>
 
               <div class="flex justify-center mt-5 mb-5 sm:mb-0">
-                <div class="text-gray-400">
+                <div v-if="isAdmin" class="text-gray-400">
 
                   <!-- Enable/Disable -->
                   <button @click="enableOrDisableClient(client)" class="w-10 mr-5 sm:mr-1 rounded-full">
@@ -173,7 +173,7 @@
               </div>
             </div>
 
-            <div v-if="clients && clients.length === 0">
+            <div v-if="isAdmin && clients && clients.length === 0">
               <p class="text-center m-10 text-gray-400 text-sm">There are no clients yet.<br /><br />
                 <button @click="clientCreate = true; clientCreateName = '';"
                         class="bg-green-400 text-white hover:bg-green-500 border-2 border-none py-2 px-4 rounded inline-flex items-center transition">

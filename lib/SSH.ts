@@ -1,7 +1,7 @@
 import { NodeSSH } from 'node-ssh';
 import _debug from 'debug';
 
-import { SSH_PORT, SSH_HOST, SSH_USER, SSH_PASSWORD } from './config';
+import { SSH_PORT, SSH_HOST, SSH_USER, SSH_PASSWORD } from '../config';
 
 const debug = _debug('SSH');
 
