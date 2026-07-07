@@ -1,5 +1,8 @@
 import QRCode from 'qrcode';
 import { ssh, SSH } from './SSH';
+import { Repository } from 'typeorm';
+import { BannedClient } from './entities';
+import { Datasource } from './Datasource';
 
 export interface Client {
   name: string;
@@ -17,10 +20,11 @@ export interface ClientStatus extends Client {
   transferRx?: number;
   transferTx?: number;
   persistentKeepalive?: string;
+  banned: boolean;
 }
 
 export default class PiVPNWireGuard {
-  constructor(private readonly ssh: SSH) {}
+  constructor(private readonly ssh: SSH, private readonly bannedClientRepository: Repository<BannedClient>) {}
 
   private sanitizeName(name: string): void {
     const regex = /[^a-z0-9 .,_-]/gim;
@@ -61,6 +65,7 @@ export default class PiVPNWireGuard {
         publicKey: client.publicKey,
         createdAt: client.createdAt,
         enabled: !wg0Config.includes(`#[disabled] ### begin ${client.name} ###`),
+        banned: false,
       });
     });
 
@@ -98,6 +103,14 @@ export default class PiVPNWireGuard {
         client.transferTx = Number(transferTx);
         client.persistentKeepalive = persistentKeepalive;
       });
+
+    const bannedClients = await this.bannedClientRepository.find();
+    bannedClients.forEach((bannedClient) => {
+      const client = result.find(cl => cl.publicKey === bannedClient.publicKey);
+      if (!client) return;
+
+      client.banned = true;
+    });
 
     return result;
   }
@@ -190,4 +203,4 @@ export default class PiVPNWireGuard {
   }
 };
 
-export const piVPNWireGuard = new PiVPNWireGuard(ssh);
+export const piVPNWireGuard = new PiVPNWireGuard(ssh, Datasource.getRepository(BannedClient));

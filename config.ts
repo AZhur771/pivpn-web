@@ -7,3 +7,5 @@ export const ADMIN_USER = process.env.ADMIN_USER;
 export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 export const VIEWER_USER = process.env.VIEWER_USER;
 export const VIEWER_PASSWORD = process.env.VIEWER_PASSWORD;
+export const TECH_USER = process.env.TECH_USER;
+export const TECH_PASSWORD = process.env.TECH_PASSWORD;
