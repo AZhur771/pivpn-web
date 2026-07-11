@@ -90,7 +90,9 @@
                 </div>
 
                 <div class="flex-grow">
-                  <div class="text-gray-700 " :class="{ 'text-red-600': (client.transferTx + client.transferRx) > limitPerClient }" :title="'Created at ' + dateTime(new Date(client.createdAt))">{{client.name}}
+                  <div class="text-gray-700 " :class="{ 'text-red-600': (client.transferTx + client.transferRx) > limitPerClient }" :title="'Created at ' + dateTime(new Date(client.createdAt))">
+                    {{client.name}}
+                    <span class="text-gray-300">{{client.publicKey}}</span>
                   </div>
                   <div v-if="client.allowedIps" class="text-gray-300 text-xs">{{client.iface}}
                     · {{client.allowedIps.split('/')[0]}}
